@@ -24,7 +24,7 @@ def processar_frame(frame):
     for cnt in contornos:
         area = cv2.contourArea(cnt)
 
-        if area > 5000:
+        if area > 1000:
             x, y, w, h = cv2.boundingRect(cnt)
 
             # desenha retângulo
