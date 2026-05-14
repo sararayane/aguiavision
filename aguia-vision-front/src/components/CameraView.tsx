@@ -13,8 +13,8 @@ export default function CameraView() {
         <>
           <img
             src={`${API_URL}/video`}
-  alt="Camera IA"
-  className="absolute inset-0 w-full h-full object-cover"
+            alt="Camera IA"
+            className="absolute inset-0 w-full h-full object-cover"
           />
 
           {/* overlay por cima */}
