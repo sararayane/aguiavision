@@ -1,11 +1,23 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 import cv2
+
 from src.vision.detector import processar_frame
 from src.arduino.arduino_reader import start_arduino, arduino_data
 from src.ai.detector_ai import detectar_objetos
 
 app = FastAPI()
+
+# libera acesso do Vercel
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 start_arduino()
 
 @app.get("/arduino")
@@ -13,11 +25,13 @@ def get_arduino():
     from src.arduino.arduino_reader import arduino_data
     return {"status": arduino_data}
 
+
 # câmera
 cap = cv2.VideoCapture(0)
 
-# variável global para compartilhar com o front
+# variável global
 ultimo_risco = "baixo"
+
 
 # 🔁 STREAM DE VÍDEO COM IA
 def gerar_frames():
@@ -29,41 +43,44 @@ def gerar_frames():
         if not success:
             break
 
-        # aplica IA
+        # IA
         frame, risco = detectar_objetos(frame)
 
-        # atualiza risco global
-        risco = False
+        # salva risco correto
         ultimo_risco = risco
 
-        # converte para jpg
-        _, buffer = cv2.imencode('.jpg', frame)
+        # converte imagem
+        _, buffer = cv2.imencode(".jpg", frame)
         frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        yield (
+            b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' +
+            frame_bytes +
+            b'\r\n'
+        )
 
 
-# 🔥 ROTA PRINCIPAL
+# rota principal
 @app.get("/")
 def home():
     return {"message": "ÁguiaVision API rodando 🚀"}
 
 
-# 🎥 ROTA DE VÍDEO
+# 🎥 vídeo
 @app.get("/video")
 def video_feed():
     return StreamingResponse(
         gerar_frames(),
-        media_type='multipart/x-mixed-replace; boundary=frame'
+        media_type="multipart/x-mixed-replace; boundary=frame"
     )
 
 
-# 📊 ROTA DE TELEMETRIA (FRONT USA)
+# 📊 telemetria
 @app.get("/status")
 def status():
     return {
         "risco": ultimo_risco,
-        "distancia": 10,   # depois ligamos no sensor real
-        "velocidade": 40   # pode vir do Arduino depois
+        "distancia": 10,
+        "velocidade": 40
     }

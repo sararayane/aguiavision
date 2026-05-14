@@ -4,11 +4,10 @@ from ultralytics import YOLO
 model = YOLO("yolov8n.pt")
 
 def detectar_objetos(frame):
-
     results = model(frame)
 
     annotated_frame = results[0].plot()
 
-    risco = False
+    risco = "baixo"
 
     return annotated_frame, risco
