@@ -11,7 +11,7 @@ export default function CameraView() {
       {isActive && (
         <>
           <img
-            src="http://127.0.0.1:8000/video"
+            src={`${API_URL}/video`}
             alt="Camera IA"
             className="absolute inset-0 w-full h-full object-cover"
           />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_URL from "../services/api";
 
 export default function TelemetryPanel() {
   const [data, setData] = useState({
@@ -9,7 +10,7 @@ export default function TelemetryPanel() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://127.0.0.1:8000/status")
+      fetch(`${API_URL}/status`)
         .then((res) => res.json())
         .then((res) => setData(res))
         .catch((err) => console.error(err));

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import API_URL from "../services/api";
 
 export default function AlertPanel() {
   const [risk, setRisk] = useState<"low" | "medium" | "high">("low");
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://127.0.0.1:8000/arduino")
+      fetch(`${API_URL}/arduino`)
         .then((res) => res.json())
         .then((data) => {
           if (data.status === "NORMAL") setRisk("low");
@@ -13,7 +14,7 @@ export default function AlertPanel() {
           else if (data.status === "PERIGO") setRisk("high");
         })
         .catch(() => {
-          console.log("Erro ao conectar com Arduino");
+          console.log("Erro ao conectar com Arduino"); 
         });
     }, 1000);
 

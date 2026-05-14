@@ -30,9 +30,10 @@ def gerar_frames():
             break
 
         # aplica IA
-        frame = detectar_objetos(frame)
+        frame, risco = detectar_objetos(frame)
 
         # atualiza risco global
+        risco = False
         ultimo_risco = risco
 
         # converte para jpg
