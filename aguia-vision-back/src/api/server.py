@@ -2,8 +2,16 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 import cv2
 from src.vision.detector import processar_frame
+from src.arduino.arduino_reader import start_arduino, arduino_data
+from src.ai.detector_ai import detectar_objetos
 
 app = FastAPI()
+start_arduino()
+
+@app.get("/arduino")
+def get_arduino():
+    from src.arduino.arduino_reader import arduino_data
+    return {"status": arduino_data}
 
 # câmera
 cap = cv2.VideoCapture(0)
@@ -22,7 +30,7 @@ def gerar_frames():
             break
 
         # aplica IA
-        frame, risco, area = processar_frame(frame)
+        frame = detectar_objetos(frame)
 
         # atualiza risco global
         ultimo_risco = risco

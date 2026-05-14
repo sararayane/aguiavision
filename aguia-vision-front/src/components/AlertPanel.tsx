@@ -5,9 +5,17 @@ export default function AlertPanel() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const levels = ["low", "medium", "high"] as const;
-      setRisk(levels[Math.floor(Math.random() * levels.length)]);
-    }, 3000);
+      fetch("http://127.0.0.1:8000/arduino")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === "NORMAL") setRisk("low");
+          else if (data.status === "ATENCAO") setRisk("medium");
+          else if (data.status === "PERIGO") setRisk("high");
+        })
+        .catch(() => {
+          console.log("Erro ao conectar com Arduino");
+        });
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -49,7 +57,9 @@ export default function AlertPanel() {
         {/* Verde */}
         <div className="flex flex-col items-center gap-2">
           <div className={`w-6 h-6 rounded-full ${
-            risk === "low" ? "bg-green-500 shadow-lg shadow-green-500/50" : "bg-slate-700"
+            risk === "low"
+              ? "bg-green-500 shadow-lg shadow-green-500/50"
+              : "bg-slate-700"
           }`} />
           <span className="text-xs text-slate-400">Seguro</span>
         </div>
@@ -57,7 +67,9 @@ export default function AlertPanel() {
         {/* Amarelo */}
         <div className="flex flex-col items-center gap-2">
           <div className={`w-6 h-6 rounded-full ${
-            risk === "medium" ? "bg-yellow-400 shadow-lg shadow-yellow-400/50" : "bg-slate-700"
+            risk === "medium"
+              ? "bg-yellow-400 shadow-lg shadow-yellow-400/50"
+              : "bg-slate-700"
           }`} />
           <span className="text-xs text-slate-400">Atenção</span>
         </div>
@@ -65,7 +77,9 @@ export default function AlertPanel() {
         {/* Vermelho */}
         <div className="flex flex-col items-center gap-2">
           <div className={`w-6 h-6 rounded-full ${
-            risk === "high" ? "bg-red-500 shadow-lg shadow-red-500/50 animate-pulse" : "bg-slate-700"
+            risk === "high"
+              ? "bg-red-500 shadow-lg shadow-red-500/50 animate-pulse"
+              : "bg-slate-700"
           }`} />
           <span className="text-xs text-slate-400">Perigo</span>
         </div>

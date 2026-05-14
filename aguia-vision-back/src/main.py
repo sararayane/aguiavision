@@ -1,5 +1,6 @@
 import cv2
 from src.vision.detector import processar_frame
+from arduino.arduino_reader import start_arduino, arduino_data
 
 cap = cv2.VideoCapture(0)
 
