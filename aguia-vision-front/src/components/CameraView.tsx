@@ -8,7 +8,7 @@ export default function CameraView() {
   return (
     <div className="relative aspect-video bg-slate-900 rounded-3xl overflow-hidden border border-yellow-500">
 
-      {/* 🎥 STREAM DO BACKEND */}
+      {/* 🎥 STREAM */}
       {isActive && (
         <>
           <img
@@ -17,14 +17,14 @@ export default function CameraView() {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* overlay por cima */}
+          {/* overlay */}
           <div className="absolute inset-0 pointer-events-none">
             <DetectionOverlay />
           </div>
         </>
       )}
 
-      {/* 🔘 TELA INICIAL */}
+      {/* tela inicial */}
       {!isActive && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-white">
           <p className="text-lg">Câmera Desconectada</p>
